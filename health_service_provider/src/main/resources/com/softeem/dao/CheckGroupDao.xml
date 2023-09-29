@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.softeem.dao.CheckGroupDao">
+    <!--新增-->
+    <insert id="add" parameterType="com.softeem.pojo.CheckGroup">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_checkgroup(code,name,sex,helpCode,remark,attention)
+        values
+        (#{code},#{name},#{sex},#{helpCode},#{remark},#{attention})
+    </insert>
+
+
+    <!--向中间表插入数据（建立检查组和检查项关联关系）-->
+    <insert id="setCheckGroupAndCheckItem" parameterType="hashmap">
+        insert into t_checkgroup_checkitem(checkgroup_id, checkitem_id)
+        values (#{checkgroup_id}, #{checkitem_id})
+    </insert>
+
+    <insert id="setCheckGroupAndCheckItem1" parameterType="hashmap">
+        insert into t_checkgroup_checkitem values
+        <foreach collection="map.checkitemIds" item="ids" separator=",">
+            (#{map.checkGroup.id}, #{ids})
+        </foreach>
+    </insert>
+
+    <update id="edit">
+        update t_checkgroup
+        set name      = #{name},
+            sex       = #{sex},
+            code      = #{code},
+            helpCode  = #{helpCode},
+            attention = #{attention},
+            remark    = #{remark}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAssociation">
+        delete
+        from t_checkgroup_checkitem
+        where checkgroup_id = #{id}
+    </delete>
+    <delete id="deleteById">
+        delete
+        from t_checkgroup
+        where id = #{id}
+    </delete>
+
+    <select id="selectByCondition" resultType="com.softeem.pojo.CheckGroup">
+        select *
+        from t_checkgroup
+        <if test="queryString!=null and queryString.length>0">
+
+            where code = #{queryString}
+            or name = #{queryString}
+            or helpCode = #{queryString}
+        </if>
+
+    </select>
+    <select id="findById" resultType="com.softeem.pojo.CheckGroup">
+        select *
+        from t_checkgroup
+        where id = #{id}
+    </select>
+
+
+    <select id="findCheckItemIdsByCheckGroupId" resultType="java.lang.Integer">
+        select checkitem_id
+        from t_checkgroup_checkitem
+        where checkgroup_id = #{id}
+    </select>
+    <select id="findAll" resultType="com.softeem.pojo.CheckGroup">
+        select *
+        from t_checkgroup
+    </select>
+
+    <resultMap id="baseResultMap" type="com.softeem.pojo.CheckGroup">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="helpCode" property="helpCode"/>
+        <result column="sex" property="sex"/>
+        <result column="remark" property="remark"/>
+        <result column="attention" property="attention"/>
+    </resultMap>
+    <resultMap id="findByIdResultMap" type="com.softeem.pojo.CheckGroup" extends="baseResultMap">
+        <collection property="checkItems"
+                    ofType="com.softeem.pojo.CheckItem"
+                    javaType="java.util.ArrayList"
+                    select="com.softeem.dao.CheckItemDao.findCheckItemById"
+                    column="id"
+                    fetchType="eager">
+        </collection>
+
+    </resultMap>
+
+    <select id="findCheckGroupById" resultMap="findByIdResultMap">
+        select cg.*
+        from t_checkgroup cg,
+             t_setmeal_checkgroup sc
+        where cg.id = sc.checkgroup_id
+          and sc.setmeal_id = #{id}
+    </select>
+</mapper>

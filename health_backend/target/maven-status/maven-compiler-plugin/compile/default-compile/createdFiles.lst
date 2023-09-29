@@ -1,0 +1,8 @@
+com\softeem\controller\CheckItemController.class
+com\softeem\controller\SetmealController.class
+com\softeem\security\SpringSecurityUserService.class
+com\softeem\controller\ReportController.class
+com\softeem\controller\AddressController.class
+com\softeem\controller\CheckGroupController.class
+com\softeem\controller\UserController.class
+com\softeem\controller\OrderSettingController.class

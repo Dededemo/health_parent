@@ -1,0 +1,7 @@
+0:0:0:0:0:0:0:1 - - [20/Dec/2022:09:28:39 +0800] "GET /pages/main.html HTTP/1.1" 302 - http-bio-82-exec-1 64
+0:0:0:0:0:0:0:1 - - [20/Dec/2022:09:28:39 +0800] "GET /login.html HTTP/1.1" 200 1988 http-bio-82-exec-3 8
+0:0:0:0:0:0:0:1 - - [20/Dec/2022:09:28:39 +0800] "GET /img/logingBg.png HTTP/1.1" 404 983 http-bio-82-exec-4 3
+0:0:0:0:0:0:0:1 - - [20/Dec/2022:09:28:40 +0800] "GET /favicon.ico HTTP/1.1" 404 973 http-bio-82-exec-5 5
+0:0:0:0:0:0:0:1 - - [20/Dec/2022:09:29:09 +0800] "GET /checkgroup/findAll.do HTTP/1.1" 302 - http-bio-82-exec-6 33
+0:0:0:0:0:0:0:1 - - [20/Dec/2022:09:29:09 +0800] "GET /login.html HTTP/1.1" 200 1988 http-bio-82-exec-7 3
+0:0:0:0:0:0:0:1 - - [20/Dec/2022:09:29:09 +0800] "GET /img/logingBg.png HTTP/1.1" 404 983 http-bio-82-exec-8 2

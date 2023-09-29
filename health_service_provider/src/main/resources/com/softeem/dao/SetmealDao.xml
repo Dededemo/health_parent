@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.softeem.dao.SetmealDao">
+
+    <!--新增-->
+    <insert id="add" parameterType="com.softeem.pojo.Setmeal">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_setmeal values(
+        null, #{name}, #{code},#{helpCode}, #{sex}, #{age}, #{price},#{remark}, #{attention}, #{img});
+    </insert>
+
+    <!--绑定套餐和检查组多对多关系-->
+    <insert id="setSetmealAndCheckGroup" parameterType="hashmap">
+        insert into t_setmeal_checkgroup values
+        <foreach collection="map.checkgroupIds" item="checkgroupid" separator=",">
+            (#{map.setmeal.id}, #{checkgroupid})
+        </foreach>
+    </insert>
+
+
+    <update id="updateById">
+        update t_setmeal
+        <set>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="attention != null">
+                attention = #{attention},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="helpCode != null">
+                helpCode = #{helpCode},
+            </if>
+            <if test="img != null">
+                img = #{img},
+            </if>
+        </set>
+        where id = #{id}
+
+    </update>
+
+    <delete id="deleteById">
+        delete
+        from t_setmeal
+        where id = #{id}
+    </delete>
+
+
+    <delete id="deleteAssociation">
+        delete
+        from t_setmeal_checkgroup
+        where setmeal_id = #{id}
+    </delete>
+
+    <select id="selectByCondition" resultType="com.softeem.pojo.Setmeal">
+        select * from t_setmeal
+        <if test="queryString!=null and queryString.length>0">
+            where code = #{queryString}
+            or name = #{queryString}
+            or helpCode = #{queryString}
+        </if>
+    </select>
+    <select id="findById" parameterType="hashmap" resultType="com.softeem.pojo.Setmeal">
+        select *
+        from t_setmeal
+        where id = #{id}
+    </select>
+    <select id="findCheckgroupIdsBySetmealId" resultType="java.lang.Integer">
+        select checkgroup_id
+        from t_setmeal_checkgroup
+        where setmeal_id = #{id}
+    </select>
+
+
+    <select id="findAll" resultType="com.softeem.pojo.Setmeal">
+        select *
+        from t_setmeal
+    </select>
+
+    <resultMap id="baseResultMap" type="com.softeem.pojo.Setmeal">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="helpCode" property="helpCode"/>
+        <result column="sex" property="sex"/>
+        <result column="age" property="age"/>
+        <result column="price" property="price"/>
+        <result column="remark" property="remark"/>
+        <result column="attention" property="attention"/>
+        <result column="img" property="img"/>
+    </resultMap>
+
+    <resultMap id="findByIdResultMap" type="com.softeem.pojo.Setmeal" extends="baseResultMap">
+        <!--
+        多对多使用collection
+        property:此pojo中的集合属性:checkGroups
+        javaType:此集合属性的类型:[java.util.ArrayList]
+        ofType:此集合的泛型类型:[com.softeem.pojo.CheckGroup]
+        column:外键id,findCheckGroupsById此方法执行时需要你给一个id值
+        select:找到com.softeem.dao.CheckGroupDao命名空间下的findCheckGroupById方法
+        select:要调用的dao中的方法
+
+        -->
+        <collection property="checkGroups"
+                    javaType="java.util.ArrayList"
+                    ofType="com.softeem.pojo.CheckGroup"
+                    column="id"
+                    select="com.softeem.dao.CheckGroupDao.findCheckGroupById"
+                    fetchType="eager">
+        </collection>
+    </resultMap>
+
+    <select id="findBySetmealId" resultMap="findByIdResultMap">
+        select *
+        from t_setmeal
+        where id = #{id}
+    </select>
+
+    <select id="findSetmealCount" resultType="java.util.Map">
+        select s.name, count(o.id) as value
+        from t_order o, t_setmeal s
+        where o.setmeal_id = s.id
+        group by s.name
+    </select>
+
+
+</mapper>

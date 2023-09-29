@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.softeem.dao.OrderSettingDao">
+
+
+    <insert id="add" parameterType="com.softeem.pojo.OrderSetting">
+        insert into t_ordersetting(orderDate, number)
+            value (#{orderDate},#{number})
+    </insert>
+
+    <!--根据日期更新预约人数-->
+    <update id="editNumberByOrderDate" parameterType="com.softeem.pojo.OrderSetting">
+        update t_ordersetting
+        set number = #{number}
+        where orderDate = #{orderDate}
+    </update>
+
+    <update id="editReservationsByOrderDate">
+        update t_ordersetting
+        set reservations = #{reservations}
+        where orderDate = #{orderDate}
+    </update>
+
+    <!--根据预约日期查询-->
+    <select id="findCountByOrderDate" parameterType="java.util.Date" resultType="long">
+        select count(*)
+        from t_ordersetting
+        where orderDate = #{orderDate}
+    </select>
+
+    <select id="getOrderSettingByMonth" resultType="com.softeem.pojo.OrderSetting">
+        SELECT *
+        FROM t_ordersetting
+        WHERE date_format(orderDate, '%Y-%c') = #{date}
+    </select>
+
+
+    <select id="findByOrderDate" resultType="com.softeem.pojo.OrderSetting">
+        select *
+        from t_ordersetting
+        where orderDate = #{date}
+    </select>
+</mapper>

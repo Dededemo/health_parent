@@ -1,0 +1,9 @@
+com\softeem\service\UserService.class
+com\softeem\service\AddressService.class
+com\softeem\service\MemberService.class
+com\softeem\service\ReportService.class
+com\softeem\service\SetmealService.class
+com\softeem\service\OrderService.class
+com\softeem\service\CheckGroupService.class
+com\softeem\service\OrderSettingService.class
+com\softeem\service\CheckItemService.class

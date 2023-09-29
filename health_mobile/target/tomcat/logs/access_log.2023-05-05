@@ -1,0 +1,8 @@
+0:0:0:0:0:0:0:1 - - [05/May/2023:15:57:14 +0800] "GET /health-information.html HTTP/1.1" 404 997 http-bio-80-exec-1 27
+0:0:0:0:0:0:0:1 - - [05/May/2023:15:57:14 +0800] "GET /favicon.ico HTTP/1.1" 404 973 http-bio-80-exec-3 1
+0:0:0:0:0:0:0:1 - - [05/May/2023:16:30:43 +0800] "GET /pages/setmeal_detail_13.html HTTP/1.1" 200 4657 http-bio-80-exec-5 3
+0:0:0:0:0:0:0:1 - - [05/May/2023:16:30:59 +0800] "GET /pages/orderInfo.html?id=12 HTTP/1.1" 200 8903 http-bio-80-exec-7 2
+0:0:0:0:0:0:0:1 - - [05/May/2023:16:30:59 +0800] "GET /css/page-health-orderInfo.css HTTP/1.1" 200 10871 http-bio-80-exec-8 2
+0:0:0:0:0:0:0:1 - - [05/May/2023:16:30:59 +0800] "GET /plugins/datapicker/datePicker.js HTTP/1.1" 200 48846 http-bio-80-exec-9 2
+0:0:0:0:0:0:0:1 - - [05/May/2023:16:30:59 +0800] "POST /setmeal/findById.do?id=12 HTTP/1.1" 200 8956 http-bio-80-exec-10 141
+0:0:0:0:0:0:0:1 - - [05/May/2023:19:04:59 +0800] "GET /favicon.ico HTTP/1.1" 404 973 http-bio-80-exec-1 26

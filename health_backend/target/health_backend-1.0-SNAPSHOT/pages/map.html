@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!--<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />-->
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="initial-scale=1.0, user-scalable=no" name="viewport"/>
+    <title>软帝健康</title>
+    <meta content="软帝健康" name="description">
+    <meta content="软帝健康" name="keywords">
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <style type="text/css">
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            font-family: "微软雅黑";
+        }
+
+        #l-map {
+            height: 580px;
+            width: 100%;
+        }
+
+        .info {
+            z-index: 999;
+            width: auto;
+            min-width: 16rem;
+            padding: 0rem 0.5rem;
+            margin-left: 10.25rem;
+            margin-top: -0.15rem;
+            position: fixed;
+            top: 1rem;
+            background-color: rgba(265, 265, 265, 0.9);
+            border-radius: .25rem;
+            font-size: 14px;
+            color: #666;
+            box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.3);
+        }
+
+        #change-btn {
+            height: 30px;
+            background: #5679ea;
+            border: 0;
+            padding: 0 10px 0 10px;
+            margin-right: 8px;
+            cursor: pointer;
+            border-radius: 2px;
+            color: #fff;
+            font-size: 14px;
+        }
+    </style>
+    <!-- 引入样式 -->
+    <link href="../plugins/elementui/index.css" rel="stylesheet">
+    <link href="../plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <!-- 引入组件库 -->
+    <script src="../js/jquery.min.js" type="text/javascript"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../plugins/elementui/index.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+    <script src="//api.map.baidu.com/api?v=2.0&ak=ztZRfnFYtPqgGn8LC9P71hcfeW5UpdVd" type="text/javascript"></script>
+</head>
+
+
+<body class="hold-transition" style="background:#CBE1FF">
+<div id="app">
+    <div class="content-header">
+        <h1>首页
+            <small>公司分布图</small>
+        </h1>
+        <el-breadcrumb class="breadcrumb" separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>公司分布图</el-breadcrumb-item>
+        </el-breadcrumb>
+    </div>
+    <div class="info">
+        <button @click="getMapCenter" id="change-btn">获取当前中心点</button>
+    </div>
+    <!--  此div就是地图显示框  -->
+    <div id="l-map">
+
+    </div>
+
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+
+    var vue = new Vue({
+        el: '#app',
+        addressList: [],
+        lng: 115.06863,
+        lat: 30.23266,
+        adds: [],
+        mymap: null,
+
+        created() {
+            // 百度地图API功能
+
+
+            // this.mymap = map ;
+            axios.get("/address/findAll.do").then(resp => {
+                if (resp.data.flag) {
+                    this.addressList = resp.data.data;
+                    var map = new BMap.Map("l-map");    // 创建Map实例
+                    this.mymap = map;
+                    map.centerAndZoom(new BMap.Point(115.06863, 30.23266), 13);// 初始化地图,设置中心点坐标和地图级别
+                    // map.addOverlay(marker);               // 将标注添加到地图中
+                    // marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+                    map.enableScrollWheelZoom(true);    //开启鼠标滚轮缩放
+
+                    //没效果的双击经纬度
+                    /*map.enableScrollWheelZoom(true);
+                    map.addEventListener('click', function (e) {
+                        alert('点击位置经纬度：' + e.latlng.lng + ',' + e.latlng.lat);
+                    });*/
+
+                    var length = this.addressList.length;
+
+                    //向地图中添加缩放控件
+                    var ctrlNav = new window.BMap.NavigationControl({
+                        anchor: BMAP_ANCHOR_TOP_LEFT,
+                        type: BMAP_NAVIGATION_CONTROL_LARGE
+                    });
+                    map.addControl(ctrlNav);
+
+                    this.adds = new Array(length);
+
+                    //遍历机构,将每个体检机构的坐标存入数据中
+                    for (var i = 0; i < length; i++) {
+                        this.lng = this.addressList[i].lngAndLat.split(",")[0];
+                        this.lat = this.addressList[i].lngAndLat.split(",")[1];
+                        this.adds[i] = new BMap.Point(this.lng, this.lat);
+                    }
+
+                    for (var i = 0; i < this.adds.length; i++) {
+                        var marker = new BMap.Marker(this.adds[i]);
+                        map.addOverlay(marker);
+                        marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+                        marker.setLabel(new BMap.Label((i + 1) + ":" + resp.data.data[i].addressName, {offset: new BMap.Size(20, -10)}));
+                    }
+                } else {
+                    this.$message.error(resp.data.message);
+                }
+            })
+        },
+        methods: {
+            getMapCenter() {
+                var cen = this.mymap.getCenter(); // 获取地图中心点
+                alert('地图中心点: (' + cen.lng.toFixed(5) + ', ' + cen.lat.toFixed(5) + ')');
+            }
+        },
+    })
+</script>
